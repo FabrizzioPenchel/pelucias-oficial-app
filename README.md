@@ -91,5 +91,5 @@ Este projeto está sob a licença MIT. Consulte o arquivo `LICENSE` para mais de
 ## 📞 Contato
 
 -   **Fabrizzio**
--   GitHub: [@ FabrizzioPenchel(https://github.com/FabrizzioPenchel[FabrizzioPenchel])
+-   GitHub: [@ FabrizzioPenchel(https://github.com/FabrizzioPenchel)
 -   LinkedIn: [https://www.linkedin.com/in/fabrizzio-penchel-95667082/]
