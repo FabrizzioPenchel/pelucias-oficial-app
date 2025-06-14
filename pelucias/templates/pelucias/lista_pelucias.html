@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo_pagina }} - Pelúcias Oficial</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        h1 { color: #5a2a8e; }
+        ul { list-style: none; padding: 0; }
+        li { background-color: #fff; border: 1px solid #ddd; margin-bottom: 10px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .nome-pelucia { font-size: 1.2em; font-weight: bold; color: #333; }
+        .descricao-pelucia { font-size: 0.9em; color: #666; margin-top: 5px; }
+        .estoque-pelucia { font-size: 0.9em; color: #007bff; margin-top: 5px; }
+        .preco-pelucia { font-size: 0.9em; color: #28a745; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>{{ titulo_pagina }}</h1>
+
+    {% if pelucias %}
+        <ul>
+            {% for pelucia in pelucias %}
+                <li>
+                    <div class="nome-pelucia">{{ pelucia.nome }}</div>
+                    {% if pelucia.descricao %}
+                        <div class="descricao-pelucia">{{ pelucia.descricao }}</div>
+                    {% endif %}
+                    <div class="preco-pelucia">Preço de Custo: R$ {{ pelucia.preco_custo|floatformat:2 }}</div>
+                    <div class="estoque-pelucia">Estoque Total: {{ pelucia.estoque_total }}</div>
+                    <div class="data-cadastro">Cadastrado em: {{ pelucia.data_cadastro|date:"d/m/Y H:i" }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhuma pelúcia ativa encontrada no momento.</p>
+    {% endif %}
+</body>
+</html>

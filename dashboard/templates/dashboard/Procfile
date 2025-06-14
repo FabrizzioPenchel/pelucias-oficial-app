@@ -1,0 +1,1 @@
+web: gunicorn pelucias_core.wsgi:application

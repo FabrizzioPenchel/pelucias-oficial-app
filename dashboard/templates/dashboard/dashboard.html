@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Pelúcias Oficial</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .header {
+            background-color: #5a2a8e; /* Cor do cabeçalho da imagem */
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .container {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        .card-header {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .card-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        /* Cores dos cards da imagem */
+        .card.total-pelucias { background-color: #e0f2f7; color: #3f51b5; } /* Azul claro */
+        .card.total-maquinas { background-color: #e8f5e9; color: #4caf50; } /* Verde claro */
+        .card.receita { background-color: #fff3e0; color: #ff9800; } /* Laranja claro */
+        .card.despesas { background-color: #ffebee; color: #f44336; } /* Vermelho claro */
+
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            color: #5a2a8e;
+            grid-column: 1 / -1; /* Ocupa toda a largura no grid */
+        }
+        .table-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            grid-column: 1 / -1; /* Ocupa toda a largura */
+            overflow-x: auto; /* Para tabelas grandes */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #555;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .status-operacional { color: #4CAF50; font-weight: bold; } /* Verde */
+        .status-reparo { color: #FFC107; font-weight: bold; } /* Laranja */
+        .status-manutencao { color: #2196F3; font-weight: bold; } /* Azul */
+        .status-inativa { color: #F44336; font-weight: bold; } /* Vermelho */
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Dashboard Pelúcias Oficial</h1>
+        <div>Visão Geral | Abastecimento</div>
+    </div>
+
+    <div class="container">
+        <div class="card total-pelucias">
+            <div class="card-header">Pelúcias</div>
+            <div class="card-value">{{ total_pelucias_cadastradas }}</div>
+        </div>
+        <div class="card total-maquinas">
+            <div class="card-header">Máquinas</div>
+            <div class="card-value">{{ total_maquinas }}</div>
+        </div>
+        <div class="card receita">
+            <div class="card-header">Receita</div>
+            <div class="card-value">R$ {{ total_receita|floatformat:2 }}</div>
+        </div>
+        <div class="card despesas">
+            <div class="card-header">Despesas</div>
+            <div class="card-value">R$ {{ total_despesas|floatformat:2 }}</div>
+        </div>
+
+        <h2 class="section-title">Máquinas de Pelúcia</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>LOCALIZAÇÃO</th>
+                        <th>PELÚCIAS</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for maquina in maquinas_info %}
+                        <tr>
+                            <td>{{ maquina.id }}</td>
+                            <td>{{ maquina.localizacao }}</td>
+                            <td>{{ maquina.pelucias }}</td>
+                            <td>
+                                <span class="status-{{ maquina.status|lower }}">{{ maquina.status }}</span>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">Nenhuma máquina cadastrada.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title">Despesas</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>DESCRIÇÃO</th>
+                        <th>VALOR</th>
+                        <th>CATEGORIA</th>
+                        <th>DATA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for despesa in despesas_recentes %}
+                        <tr>
+                            <td>{{ despesa.descricao }}</td>
+                            <td>R$ {{ despesa.valor|floatformat:2 }}</td>
+                            <td>{{ despesa.categoria }}</td>
+                            <td>{{ despesa.data|date:"d/m/Y" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">Nenhuma despesa registrada.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title">Pelúcias Distribuídas</h2> <div class="table-container">
+            <canvas id="peluciasDistribuídasChart"></canvas> </div>
+
+    </div>
+
+    <script>
+        // Pega os dados do contexto do Django
+        const chartLabels = JSON.parse('{{ chart_labels|safe }}'); // Labels: meses
+        const chartData = JSON.parse('{{ chart_data|safe }}');   // Data: quantidade vendida
+
+        // Configurações do Gráfico
+        const ctx = document.getElementById('peluciasDistribuídasChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line', // Ou 'bar' para um gráfico de barras
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Pelúcias Distribuídas',
+                    data: chartData,
+                    backgroundColor: 'rgba(90, 42, 142, 0.2)', // Cor de fundo (lilás claro)
+                    borderColor: 'rgba(90, 42, 142, 1)',    // Cor da linha (lilás escuro)
+                    borderWidth: 2,
+                    fill: true, // Preenche a área abaixo da linha
+                    tension: 0.4 // Curvatura da linha
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Permite que você controle o tamanho
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Quantidade'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Mês'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                }
+            }
+        });
+    </script> </body>
+</html>
